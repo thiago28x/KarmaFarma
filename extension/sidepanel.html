@@ -3,9 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>KarmaFarma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+
+        /* color variables */
+
+        :root {
+  --mint: #28e66be2;
+  --white: #ffffff; 
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Montserrat, sans-serif;
+    font-size: 16px;
+    background-color: rgb(51, 51, 51);
+    background-image: url("images/bg.svg");
+    background-position: center;
+    background-size: cover;
+    border-radius: 5px;
+    padding: 20px;
+    height: 100%; /* Full height based on html */
+    border: #04b38a 1px solid;
+}
+
+
+
+        .ctr  {
+           
+            align-items: center;
+            justify-content: center;
+            max-width: 350px;
+			font-family: Montserrat, sans-serif;
+			font-size: 16px;
+            /* background: rgb(0,0,0);
+background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(22,74,110,1) 100%); */
+            background-color: rgba(51, 51, 51, 0.91);
+			margin: 0;
+			border-radius: 5px;
+		}
+
+        .col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+
+		h1 {
+			margin: 10px;
+			color: var(--mint);
+			padding: 10px;
+		}
+
+		p {
+			margin: 10px;
+			padding: 10px;
+			background-color: #fff;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            max-width: 250px;
+		}
+
+	
+		button:hover {
+			background-color: #04b38a;
+		}
+        .icon-button, button {
+            margin: 5px;
+			background-color: var(--mint);
+            min-width: 90px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .icon-button:hover {
+            background-color: #0056b3;
+        }
+
+        .icon-button i {
+            margin-right: 8px; /* Space between icon and text */
+        }
+
+        label {
+            color: #fff;
+  font-family:  Montserrat, sans-serif;
+  font-size: 1rem;
+  padding-right: 10px;
+}
+
+select {
+  font-size: 0.9rem;
+  padding: 2px 5px;
+}
+
+.tab {
+    display: none;
+}
+
+	</style>
 </head>
 <body>
+<div class="tab" id="1" style="background-color: rgba(51, 51, 51, 0.91); border: #0056b3 1px solid;">
+    <div class="ctr">
+    <div style="background-color: rgba(30, 30, 30, 0.596);
+; align-items: center; justify-content: center; display: flex;">
+
+	<img style="margin: 10px; align-items: center; justify-content: center"  width="170px" height="90px" src="images/logos/idle.png"	/>
+</div>  
+<div  style="padding: 20px;">
+	<h1>KarmaFarma</h1>
+	<p id="status1">loading...</p>
+	<p id="status2" >0 comments found</p>
+	<!-- <p>generating comment reply...</p> -->
+
+<!-- dropdown selector with options "sassy", "funny", "flirty", "scary", "smart" -->
+<label for="mood-select">Mood</label>
+<select name="mood" id="dd-mood">
+  <option value="sassy">sassy</option>
+  <option value="funny">funny</option>
+  <option value="flirty">flirty</option>
+  <option value="scary">scary</option>
+  <option value="smart">smart</option>
+
+</select>
+
+    <div class="row">
+        <button id="getComments">Get comments</button>
+        <button id="test" style="background-color: #0056b3;">test</button>
+    </div>
+	
+
     
+</div>
+</div>
+
+<div style="height: auto; min-height: 20px; background-color: rgba(51, 51, 51, 0.115);   justify-content: space-around;
+">
+    <!-- filler -->
+</div>
+
+
+
+
+ 
+
+
+ 
+</div>
+<div class="tab" id="2" style="background-color: rgba(51, 51, 51, 0.91); border: #0056b3 1px solid;"></div>
+    <p id="aiReply"></p>
+    <!-- reply here -->
+</div>
+
+
+<div class="tab" id="3" style="background-color: rgba(51, 51, 51, 0.91); border: #b721f7 1px solid; ">
+
+<h1>Settings</h1>
+
+</div>
+
+<div style="height: auto; min-height: 40px; background-color: rgba(51, 51, 51, 0.91);   justify-content: space-around;
+">
+
+<div id="footer">
+    <div class="row" style="align-items: center; justify-content: space-between;">
+
+    <button class="icon-button" onclick="showTab(2)">
+        <i class="fas fa-user-circle"></i>
+        Account
+    </button>
+        <button class="icon-button" onclick="showTab(3)">
+            <i class="fas fa-cog"></i>
+            Settings
+        </button>
+        <button class="icon-button" onclick="showTab(4)">
+            <i class="fa-solid fa-wand-magic"></i>
+            Suggestions
+        </button>
+
+
+
+    </div>
+
+</div>
+</div>
+
+
+
+
+</div >
 </body>
+	<script src="popup.js"></script>
 </html>

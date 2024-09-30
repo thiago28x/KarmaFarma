@@ -22,7 +22,7 @@
 		"default_title": "KarmaFarma",
 		"default_popup": "popup.html"
 	},
-	"permissions": ["tabs", "activeTab"],
+	"permissions": ["tabs", "activeTab", "sidePanel"],
 	"content_scripts": [
 		{
 			"js": ["./content.js"],
@@ -30,14 +30,10 @@
 			"run_at": "document_end"
 		}
 	],
-	"sidebar_action": {
-		"default_icon": {
-			"16": "icons/icon.png",
-			"32": "icons/icon.png",
-			"48": "icons/icon.png",
-			"128": "icons/icon.png"
-		},
+	"side_panel": {
+		"default_path": "sidepanel.html",
 		"default_title": "KarmaFarma Sidebar",
 		"default_panel": "sidebar.html"
-	}
+	},
+	"host_permissions": ["https://api.openrouter.ai/*"]
 }
