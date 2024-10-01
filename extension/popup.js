@@ -1,11 +1,7 @@
-console.log("popup.js loaded");
 // Global variables to store the post and comments data
 let postDetails = {};
 let comments = [];
-let commentsQty = 50; //TODO filter out comments with less than 10 upvotes
-
-/* log the tab url */
-console.log("tab url: " + window.location.toString());
+let commentsQty = 20; //TODO filter out comments with less than 10 upvotes
 
 let testBtn = document.getElementById("test");
 testBtn.addEventListener("click", test);
@@ -59,7 +55,7 @@ function getComments() {
 				return;
 			}
 
-			console.log("Current URL:", getCurrentTab.url);
+			//console.log("Current URL:", getCurrentTab.url);
 
 			setStatus("tab0", getCurrentTab.url);
 			getJsonComments(getCurrentTab.url);
@@ -70,7 +66,7 @@ function getComments() {
 }
 
 function getJsonComments(url) {
-	console.log(url);
+	//console.log(url);
 	if (url.includes("reddit.com/r/")) {
 		/* remove this from the url '#lightbox' */
 		url = url.replace("#lightbox", "");
@@ -100,7 +96,6 @@ function getJsonComments(url) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
 	showTab(1);
 
 	chrome.runtime.sendMessage({action: "getActiveTabUrl"}, function (response) {
@@ -116,14 +111,19 @@ function organizeData(data) {
 	postDetails = {};
 	comments = [];
 
-	// First, extract post title and body, from the first "Listing".
-	if (data.length > 0 && data[0].data.children.length > 0) {
-		const post = data[0].data.children[0].data;
-		postDetails = {
-			title: post.title.replace(/[\'\"\&\n]/g, "").replace(/<[^>]*>/g, ""),
-			body: post.selftext.replace(/[\'\"\&\n]/g, "").replace(/<[^>]*>/g, ""),
-		};
-	}
+    // First, extract post title, body, subreddit, and flair from the first "Listing".
+    if (data.length > 0 && data[0].data.children.length > 0) {
+        const post = data[0].data.children[0].data;
+
+        // Extract title, body, subreddit, and flair
+        postDetails = {
+            title: post.title.replace(/[\'\"\&\n]/g, "").replace(/<[^>]*>/g, ""),
+            body: post.selftext.replace(/[\'\"\&\n]/g, "").replace(/<[^>]*>/g, ""),
+            subreddit: post.subreddit, // Extract subreddit
+            flair: post.link_flair_css_class || "No flair" // Extract post flair or default to "No flair"
+        };
+
+        console.log("Post details:\n\n", postDetails, "\n\n");}
 
 	//only until commentsQty variable.
 	// Then, extract comments from the second "Listing"
@@ -154,7 +154,44 @@ function requestAIReply(commentText) {
 	chrome.runtime.sendMessage({action: "getAIReply", commentText: commentText}, function (response) {
 		console.log("✨ Finished processing, AI Response: \n", response);
 		setStatus(`Finished!`, `✅`);
-		document.getElementById("aiReply").textContent = response.reply;
+
+		displayReplies(response);
+		showTab(4);
+	});
+}
+function displayReplies(response) {
+	const repliesContainer = document.getElementById("repliesContainer");
+
+	// Clear previous replies
+	repliesContainer.innerHTML = "";
+
+	let replyArray;
+
+	// Check if the response is an array
+	if (Array.isArray(response)) {
+		replyArray = response; // it's already an array
+	} else {
+		try {
+			// Attempt to parse it as a stringified array
+			replyArray = JSON.parse(response);
+		} catch (e) {
+			// If it's not a stringified array, treat it as a single string response
+			replyArray = [response];
+		}
+	}
+
+	// Iterate through replyArray and create <p> for each reply
+	replyArray.forEach((replyString) => {
+		const replyElement = document.createElement("div");
+
+		// Add class 'reply' to the reply div
+		replyElement.classList.add("reply");
+
+		const replyParagraph = document.createElement("p");
+		replyParagraph.textContent = replyString;
+
+		replyElement.appendChild(replyParagraph);
+		repliesContainer.appendChild(replyElement);
 	});
 }
 
@@ -173,37 +210,39 @@ function insertCommentInRedditTab(commentText) {
 	});
 }
 
-// Example usage
 document.getElementById("test").addEventListener("click", () => {
 	const commentText = "This is an automated comment.";
 	insertCommentInRedditTab(commentText);
 });
 
+document.getElementById("info").addEventListener("click", () => {
 
 
+});
 
+document.addEventListener("DOMContentLoaded", function () {
+	const buttons = document.querySelectorAll(".icon-button");
 
-
-
-
+	buttons.forEach((button) => {
+		button.addEventListener("click", function () {
+			const tabNumber = this.getAttribute("data-tab");
+			showTab(tabNumber);
+		});
+	});
+});
 
 function showTab(tabNumber) {
 	// Hide all tabs
-	const tabs = document.querySelectorAll('.tab');
-	tabs.forEach(tab => tab.style.display = 'none');
+	document.querySelectorAll(".tab").forEach((tab) => {
+		tab.style.display = "none";
+	});
 
-	// Show the correct tab
-	const selectedTab = document.getElementById(tabNumber.toString());
+	// Show the selected tab
+	const selectedTab = document.getElementById(tabNumber);
 	if (selectedTab) {
-		selectedTab.style.display = 'block';
+		selectedTab.style.display = "block";
 	}
 }
-
-
-
-
-
-
 
 /* 
 

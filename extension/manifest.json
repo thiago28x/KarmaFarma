@@ -22,7 +22,7 @@
 		"default_title": "KarmaFarma",
 		"default_popup": "popup.html"
 	},
-	"permissions": ["tabs", "activeTab", "sidePanel"],
+	"permissions": ["tabs", "activeTab", "sidePanel", "storage"],
 	"content_scripts": [
 		{
 			"js": ["./content.js"],
@@ -33,7 +33,9 @@
 	"side_panel": {
 		"default_path": "sidepanel.html",
 		"default_title": "KarmaFarma Sidebar",
-		"default_panel": "sidebar.html"
+		"default_panel": "sidebar.html",
+	"stylesheets": ["sidepanel.css"]
 	},
 	"host_permissions": ["https://api.openrouter.ai/*"]
+	
 }

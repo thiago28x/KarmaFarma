@@ -5,137 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KarmaFarma</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<style>
-
-        /* color variables */
-
-        :root {
-  --mint: #28e66be2;
-  --white: #ffffff; 
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-family: Montserrat, sans-serif;
-    font-size: 16px;
-    background-color: rgb(51, 51, 51);
-    background-image: url("images/bg.svg");
-    background-position: center;
-    background-size: cover;
-    border-radius: 5px;
-    padding: 20px;
-    height: 100%; /* Full height based on html */
-    border: #04b38a 1px solid;
-}
-
-
-
-        .ctr  {
-           
-            align-items: center;
-            justify-content: center;
-            max-width: 350px;
-			font-family: Montserrat, sans-serif;
-			font-size: 16px;
-            /* background: rgb(0,0,0);
-background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(22,74,110,1) 100%); */
-            background-color: rgba(51, 51, 51, 0.91);
-			margin: 0;
-			border-radius: 5px;
-		}
-
-        .col {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .row {
-            display: flex;
-            flex-direction: row;
-        }
-
-		h1 {
-			margin: 10px;
-			color: var(--mint);
-			padding: 10px;
-		}
-
-		p {
-			margin: 10px;
-			padding: 10px;
-			background-color: #fff;
-			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            max-width: 250px;
-		}
-
+    <link rel="stylesheet" href="sidepanel.css">
 	
-		button:hover {
-			background-color: #04b38a;
-		}
-        .icon-button, button {
-            margin: 5px;
-			background-color: var(--mint);
-            min-width: 90px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            font-size: 16px;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .icon-button:hover {
-            background-color: #0056b3;
-        }
-
-        .icon-button i {
-            margin-right: 8px; /* Space between icon and text */
-        }
-
-        label {
-            color: #fff;
-  font-family:  Montserrat, sans-serif;
-  font-size: 1rem;
-  padding-right: 10px;
-}
-
-select {
-  font-size: 0.9rem;
-  padding: 2px 5px;
-}
-
-.tab {
-    display: none;
-}
-
-	</style>
 </head>
 <body>
-<div class="tab" id="1" style="background-color: rgba(51, 51, 51, 0.91); border: #0056b3 1px solid;">
+<div class="tab" id="1">
     <div class="ctr">
-    <div style="background-color: rgba(30, 30, 30, 0.596);
+
+        <!-- header banner -->
+    <div class="col" style="background-color: rgba(30, 30, 30, 0.1);
 ; align-items: center; justify-content: center; display: flex;">
 
-	<img style="margin: 10px; align-items: center; justify-content: center"  width="170px" height="90px" src="images/logos/idle.png"	/>
+	<img style="margin: 15px; align-items: center; justify-content: center"  width="170px" height="90px" src="images/logos/idle.png"	/>
+	<h1 style="margin-top: -12px;">KarmaFarma</h1>
+
 </div>  
-<div  style="padding: 20px;">
-	<h1>KarmaFarma</h1>
-	<p id="status1">loading...</p>
+
+<!-- main content -->
+<div  class="col" style="padding: 20px; gap: 40px;">
+
+<div class="col">
+	<p id="status1">Status: Idle</p>
 	<p id="status2" >0 comments found</p>
 	<!-- <p>generating comment reply...</p> -->
+</div>
 
+
+    <div class="col">
 <!-- dropdown selector with options "sassy", "funny", "flirty", "scary", "smart" -->
 <label for="mood-select">Mood</label>
 <select name="mood" id="dd-mood">
@@ -144,21 +40,28 @@ select {
   <option value="flirty">flirty</option>
   <option value="scary">scary</option>
   <option value="smart">smart</option>
-
 </select>
+</div>
+
 
     <div class="row">
-        <button id="getComments">Get comments</button>
+
+        <button id="getComments" >
+            <i class="fa fa-magic"></i>
+            Get comments
+        </button>
+
+
         <button id="test" style="background-color: #0056b3;">test</button>
     </div>
+    <button id="info" style="background-color: #0056b3;">Info</button>
 	
 
     
 </div>
 </div>
 
-<div style="height: auto; min-height: 20px; background-color: rgba(51, 51, 51, 0.115);   justify-content: space-around;
-">
+<div style="height: 0px; border: #0056b3 0px solid;">
     <!-- filler -->
 </div>
 
@@ -170,36 +73,128 @@ select {
 
  
 </div>
-<div class="tab" id="2" style="background-color: rgba(51, 51, 51, 0.91); border: #0056b3 1px solid;"></div>
-    <p id="aiReply"></p>
-    <!-- reply here -->
+<div class="tab" id="2">
+<h1>Account</h1>
+
+
+<div class="col" style="gap: 20px; padding: 30px;">
+<!-- todo: save username into extension storage -->
+ <div class="col">
+<label for="username">Username</label>
+<input type="text" placeholder="Username" id="username" name="username">
+
+<br>
+<!-- todo: save password into extension storage -->
+<label for="password">Password</label>
+<input type="password" placeholder="Password" id="password" name="password">
+</div>
+
+<div class="col">
+<!-- Signup button below -->
+<button id="signup" style="background-color: var(--mint);">Signup (new user)</button>  
+<button id="login" style="background-color: #0056b3;">Login</button>
+
+</div>
+
+<!-- total amount of tokens used -->
+<p>Total amount of tokens used: 0</p>
+</div>
+
+  
+</div>
+  
 </div>
 
 
-<div class="tab" id="3" style="background-color: rgba(51, 51, 51, 0.91); border: #b721f7 1px solid; ">
-
+<div class="tab" id="3" >
+    
+<div class="col" style="padding: 20px;gap: 40px;">
 <h1>Settings</h1>
 
+
+<div class="col">
+<!-- todo: save language into extension storage -->
+<!-- dropdown selector for app language -->
+<label for="lang-select">Content Language</label>
+<select name="lang" id="dd-language">
+  <option value="en">English</option>
+  <option value="de">Deutsch</option>
+  <option value="es">Español</option>
+  <option value="fr">Français</option>
+  <option value="it">Italiano</option>
+  <option value="nl">Nederlands</option>
+  <option value="pl">Polski</option>
+  <option value="pt">Português</option>
+  <option value="ru">Русский</option>
+  <option value="sv">Svenska</option>
+  <option value="tr">Türkçe</option>
+  <option value="uk">Українська</option>
+  <option value="zh">中文</option>
+</select>
 </div>
+
+
+<div class="col">
+
+<label for="">Custom Instructions</label>  
+
+<!-- multiline text input -->
+<textarea id="customInstructions" placeholder="This subreddit is about [...] , assume expertise, try to be as creative/smarty-pants/quirky/mean/sexy as possible, etc" type="text" name="customInstructions" rows="4" cols="50"></textarea>
+<br>
+</form>
+
+
+</div>
+
+<div class="col">
+    asdasd
+    </div>
+    <div class="col">
+        asdasd
+        </div>
+        <div class="col">
+            asdasd
+            </div>
+</div>
+<button id="btn-save-settings" style=" font-size: 18px;background-color: var(--mint); width: 230px; flex-direction: row; margin: 15px; justify-content: center;">
+    <i style="margin-right: 10px;" class="fa-solid fa-save"></i>
+    Save Settings
+</button>
+</div>
+
+
+<div class="tab" id="4" >
+    
+    <h1>Suggestions</h1>
+    <div id="repliesContainer">
+    <!-- reply list here -->
+    </div>
+    
+    </div>
 
 <div style="height: auto; min-height: 40px; background-color: rgba(51, 51, 51, 0.91);   justify-content: space-around;
 ">
 
 <div id="footer">
-    <div class="row" style="align-items: center; justify-content: space-between;">
-
-    <button class="icon-button" onclick="showTab(2)">
-        <i class="fas fa-user-circle"></i>
-        Account
-    </button>
-        <button class="icon-button" onclick="showTab(3)">
+    <div class="row" style="align-items: center; justify-content: space-around;">
+        <button class="icon-button" id="btn-home" data-tab="1">
+            <i class="fas fa-home"></i>
+            Home
+        </button>
+        <button class="icon-button" id="btn-account" data-tab="2">
+            <i class="fas fa-user-circle"></i>
+            Account
+        </button>
+        <button class="icon-button" id="btn-settings" data-tab="3">
             <i class="fas fa-cog"></i>
             Settings
         </button>
-        <button class="icon-button" onclick="showTab(4)">
+        <button class="icon-button" id="btn-suggestions" data-tab="4">
             <i class="fa-solid fa-wand-magic"></i>
             Suggestions
         </button>
+    </div>
+    
 
 
 
