@@ -4,20 +4,20 @@
 	"description": "Win all arguments or just farm a new reddit account. Get AI comments that match the post vibe and content.",
 	"version": "1.0",
 	"icons": {
-		"16": "icons/icon.png",
+		"16": "icons/favicon.png",
 		"32": "icons/icon.png",
 		"48": "icons/icon.png",
-		"128": "icons/icon.png"
+		"128": "icons/favicon.png"
 	},
 	"background": {
 		"service_worker": "background.js"
 	},
 	"action": {
 		"default_icon": {
-			"16": "icons/icon.png",
+			"16": "icons/favicon.png",
 			"32": "icons/icon.png",
 			"48": "icons/icon.png",
-			"128": "icons/icon.png"
+			"128": "icons/favicon.png"
 		},
 		"default_title": "KarmaFarma",
 		"default_popup": "popup.html"

@@ -102,6 +102,13 @@ button {
 	margin-top: 3px;
 }
 
+ i {
+	font-size: 18px;
+	color: white;
+	margin-bottom: 5px;
+	margin-top: 3px;
+}
+
 
 
 #footer > div > .icon-button {
@@ -152,6 +159,7 @@ select {
     padding-bottom: 30px;
     border-radius: 5px;
     margin: 13px;
+	max-width: 450px;
 }
 
 .reply {

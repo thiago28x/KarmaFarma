@@ -1,199 +1,122 @@
-// Global variables to store the post and comments data
-let postDetails = {};
-let comments = [];
-let commentsQty = 20; //TODO filter out comments with less than 10 upvotes
+// Global variables
+let postDetails = {}, comments = [], commentsQty = 20, language = "", customInstructions = "", model = "meta-llama/llama-3.2-11b-vision-instruct:free", mood = "sassy";
 
-let testBtn = document.getElementById("test");
-testBtn.addEventListener("click", test);
+// Add event listeners in one block
+document.addEventListener("DOMContentLoaded", () => {
+    const elements = {
+        testBtn: document.getElementById("test"),
+        languageSelector: document.getElementById("dd-language"),
+        customInstructionsSelector: document.getElementById("customInstructions"),
+        llmModelSelector: document.getElementById("dd-model"),
+        ddMood: document.getElementById("dd-mood"),
+        getCommentsBtn: document.getElementById("getComments"),
+        status1: document.getElementById("status1"),
+        status2: document.getElementById("status2")
+    };
 
-function test() {
-	console.log("test");
+    const setStatus = (m1, m2 = '') => {
+        elements.status1.textContent = m1;
+        elements.status2.textContent = m2;
+    };
 
-	// First, select the comment box with the contenteditable attribute
-	const commentBox = document.querySelector('div[contenteditable="true"][name="body"]');
+    const fetchComments = async (url) => {
+        if (!url.includes("reddit.com/r/")) return setStatus("error", "Not a Reddit post 🤔");
+        try {
+            const response = await fetch(url.replace("#lightbox", "") + ".json");
+            if (!response.ok) throw new Error("HTTP error: " + response.status);
+            const data = await response.json();
+            processRedditData(data);
+        } catch (error) {
+            console.error(error.message, error.stack);
+            setStatus("error", error.message);
+        }
+    };
 
-	if (commentBox) {
-		// Focus on the comment box to make it active
-		commentBox.focus();
-		const eventOptions = {bubbles: true, cancelable: true, view: window};
+    const processRedditData = (data) => {
+        if (!data.length || !data[0].data.children.length) return;
 
-		// Simulate mouse click to activate the box
-		commentBox.dispatchEvent(new MouseEvent("mousedown", eventOptions));
-		commentBox.dispatchEvent(new MouseEvent("mouseup", eventOptions));
-
-		// Use execCommand to insert text
-		document.execCommand("insertText", false, "test");
-
-		console.log("Text inserted successfully");
-	}
-}
-
-let getCommentsBtn = document.getElementById("getComments");
-getCommentsBtn.addEventListener("click", getComments);
-
-let status1 = document.getElementById("status1");
-let status2 = document.getElementById("status2");
-
-function setStatus(m1, m2) {
-	status1.textContent = m1;
-	status2.textContent = m2;
-}
-
-function getComments() {
-	try {
-		chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-			if (tabs.length === 0) {
-				setStatus("error", "No active tab found.");
-				return;
-			}
-
-			// Get the current tab's URL
-			const [getCurrentTab] = tabs;
-
-			if (!getCurrentTab) {
-				setStatus("error", "getCurrentTab is null.");
-				return;
-			}
-
-			//console.log("Current URL:", getCurrentTab.url);
-
-			setStatus("tab0", getCurrentTab.url);
-			getJsonComments(getCurrentTab.url);
-		});
-	} catch (e) {
-		setStatus("error", "Exception occurred: " + e);
-	}
-}
-
-function getJsonComments(url) {
-	//console.log(url);
-	if (url.includes("reddit.com/r/")) {
-		/* remove this from the url '#lightbox' */
-		url = url.replace("#lightbox", "");
-		console.log(url);
-
-		fetch(url + ".json")
-			.then((response) => {
-				if (response.ok) {
-					return response.json();
-				} else {
-					throw new Error("HTTP error, status = " + response.status);
-				}
-			})
-			.then((data) => {
-				console.log(data);
-				organizeData(data);
-			})
-			.catch((error) => {
-				console.error("Error: " + error.message);
-				if (error.stack) {
-					console.error("stack: " + error.stack);
-				}
-			});
-	} else {
-		setStatus("error", "Current tab is not a Reddit post 🤔");
-	}
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-	showTab(1);
-
-	chrome.runtime.sendMessage({action: "getActiveTabUrl"}, function (response) {
-		if (response.url) {
-			console.log("DOM content loaded. Active Tab URL:", response.url);
-		} else {
-			console.error("Failed to retrieve the active tab's URL.");
-		}
-	});
-});
-function organizeData(data) {
-	// Clear previous data
-	postDetails = {};
-	comments = [];
-
-    // First, extract post title, body, subreddit, and flair from the first "Listing".
-    if (data.length > 0 && data[0].data.children.length > 0) {
         const post = data[0].data.children[0].data;
-
-        // Extract title, body, subreddit, and flair
         postDetails = {
-            title: post.title.replace(/[\'\"\&\n]/g, "").replace(/<[^>]*>/g, ""),
-            body: post.selftext.replace(/[\'\"\&\n]/g, "").replace(/<[^>]*>/g, ""),
-            subreddit: post.subreddit, // Extract subreddit
-            flair: post.link_flair_css_class || "No flair" // Extract post flair or default to "No flair"
+            title: cleanText(post.title),
+            body: cleanText(post.selftext),
+            subreddit: post.subreddit,
+            flair: post.link_flair_css_class || ""
         };
+        console.log("Post Details:", postDetails);
 
-        console.log("Post details:\n\n", postDetails, "\n\n");}
+        if (data.length > 1 && data[1].data.children.length) {
+            comments = data[1].data.children.slice(0, commentsQty).map(comment => ({
+               // author: comment.data.author,
+                body: cleanText(comment.data.body)
+            }));
+            console.log("Comments: \n", comments , '\n\n');
+            setStatus(postDetails.title, `Analyzing ${comments.length} comments...`);
+            requestAIReply(postDetails, comments.map(c => ` '${c.body}.' `).join(", "));
+        }
+    };
 
-	//only until commentsQty variable.
-	// Then, extract comments from the second "Listing"
-	if (data.length > 1 && data[1].data.children.length > 0) {
-		data[1].data.children.slice(0, commentsQty).forEach((comment) => {
-			const commentData = comment.data;
-			comments.push({
-				author: commentData.author,
-				body: commentData.body.replace(/[\'\"\&\n]/g, "").replace(/<[^>]*>/g, ""), // clean the comment body
-			});
-		});
-	}
+    const cleanText = (text) => text
+        .replace(/[\'\"\&\n]/g, "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/gt;/g, "")
+        .replace(/https?:\/\/\S+/g, "")
+        .replace(/#[a-zA-Z0-9_]+/g, "")
+        .replace(/[\u0000-\u00ff][\u0100-\uffff]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]/g, "");
 
-	// Log the comments for debugging
-	console.log("Comments:", comments);
+    const requestAIReply = (postDetails, formattedComments) => {
+        chrome.runtime.sendMessage({
+            action: "getAIReply",
+            postTitle: postDetails.title,
+            postBody: postDetails.body,
+            formattedComments,
+            subreddit: postDetails.subreddit,
+            flair: postDetails.flair,
+            language,
+            customInstructions,
+			model,
+			mood
+        }, (response) => {
+            console.log("AI Response:", response);
+            setStatus("Finished!");
+            displayReplies(response);
+			showTab(4);
+        });
+    };
 
-	// Format the comments as a clean string for AI processing
-	const formattedComments = comments.map((comment) => `Author: ${comment.author}, Comment: ${comment.body}`).join("\n\n");
+    // Initialize event listeners
+    elements.testBtn.addEventListener("click", () => setStatus("Test clicked"));
+    elements.languageSelector.addEventListener("change", (e) => language = e.target.value);
+    elements.customInstructionsSelector.addEventListener("change", (e) => customInstructions = e.target.value);
+    elements.llmModelSelector.addEventListener("change", (e) => model = e.target.value);
+    elements.ddMood.addEventListener("change", (e) => mood = e.target.value);
+    elements.getCommentsBtn.addEventListener("click", () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+            if (tab) fetchComments(tab.url);
+            else setStatus("error", "No active tab found.");
+        });
+    });
 
-	setStatus(`${postDetails.title}`, `Analyzing ${comments.length} comments...`);
-
-	// Request the AI reply with the formatted comments
-	requestAIReply(`${postDetails.title}\n\n${postDetails.body}\n\n${formattedComments}`);
-}
-
-function requestAIReply(commentText) {
-	// Send message to background script
-	chrome.runtime.sendMessage({action: "getAIReply", commentText: commentText}, function (response) {
-		console.log("✨ Finished processing, AI Response: \n", response);
-		setStatus(`Finished!`, `✅`);
-
-		displayReplies(response);
-		showTab(4);
-	});
-}
+    // Default active tab processing
+    chrome.runtime.sendMessage({ action: "getActiveTabUrl" }, (response) => {
+        console.log("Active Tab URL:", response.url);
+    });
+});
+// Utility function to display replies
 function displayReplies(response) {
-	const repliesContainer = document.getElementById("repliesContainer");
-
-	// Clear previous replies
-	repliesContainer.innerHTML = "";
-
-	let replyArray;
-
-	// Check if the response is an array
-	if (Array.isArray(response)) {
-		replyArray = response; // it's already an array
-	} else {
-		try {
-			// Attempt to parse it as a stringified array
-			replyArray = JSON.parse(response);
-		} catch (e) {
-			// If it's not a stringified array, treat it as a single string response
-			replyArray = [response];
-		}
-	}
-
-	// Iterate through replyArray and create <p> for each reply
-	replyArray.forEach((replyString) => {
-		const replyElement = document.createElement("div");
-
-		// Add class 'reply' to the reply div
-		replyElement.classList.add("reply");
-
-		const replyParagraph = document.createElement("p");
-		replyParagraph.textContent = replyString;
-
-		replyElement.appendChild(replyParagraph);
-		repliesContainer.appendChild(replyElement);
-	});
+    const repliesContainer = document.getElementById("repliesContainer");
+    repliesContainer.innerHTML = "";
+    (Array.isArray(response) ? response : [response]).forEach(reply => {
+        const replyElement = document.createElement("div");
+        replyElement.classList.add("reply");
+        const replyParagraph = document.createElement("p");
+        replyParagraph.textContent = reply;
+        replyElement.appendChild(replyParagraph);
+        repliesContainer.appendChild(replyElement);
+    });
 }
+
+
+
 
 // popup.js
 
@@ -244,22 +167,32 @@ function showTab(tabNumber) {
 	}
 }
 
-/* 
 
-fetch("https://api.openrouter.ai/v1/completions", {
-	"headers": {
-	  "authorization": "Bearer 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",
-	  "content-type": "application/json"
-	},
-	"referrer": "",
-	"referrerPolicy": "strict-origin-when-cross-origin",
-	"body": "{\"model\":\"meta-llama/llama-3.2-11b-vision-instruct:free\",\"messages\":[{\"role\":\"system\",\"content\":\"I need to create a sassy reply to a reddit post. Reply in a similar tone to the comments provided. Be brief, witty, and smart.\"},{\"role\":\"user\",\"content\":\"Give me suggestions for a new comment, mimicking the tone of this list of comments but being original and creative: Romantic seneces\\n\\n\\n\\nAuthor: dr_lm, Comment: See I like this because it isnt trying to capture the exact likeness of the people in the source photo, but to stylize it whilst capturing the overall vibe.\\n\\nAuthor: Old-March-5273, Comment: how ?gt;gt;gt;gt;gt; any short tutorial or video ?gt;\\n\\nAuthor: casey_otaku, Comment: Cool) XL?\\n\\nAuthor: scorpiov2, Comment: Lineart Controlnet? Looks cool\\n\\nAuthor: thewayur, Comment: Which art style it is?Any workflow or short guide to achieve this please 🙏\\n\\nAuthor: FeelingFickle7400, Comment: wow, how do you create it, do you trained the lora by some specital dataset ?\\n\\nAuthor: bozkurt81, Comment: Amazing work, tutorial please\\n\\nAuthor: DoragonSubbing, Comment: is the LoRA private? If yes, are you willing to release it?\\n\\nAuthor: CallingGoend, Comment: Is that Grimes on ninth picture??\\n\\nAuthor: innovanimations, Comment: interesting\\n\\nAuthor: Cubey42, Comment: TIL Senece is a word\\n\\nAuthor: BeeSynthetic, Comment: Nicely captured lt;3  The essence of the connections are fully preserved. Well played.My only critism, is it appears to be hetro only. Take a leap and capture this with \\\\*any\\\\* scene. Next Goal :P\"}],\"max_tokens\":100}",
-	"method": "POST",
-	"mode": "cors",
-	"credentials": "include"
-  }); 
-  
- 
- 
- 
-  */
+
+
+
+
+
+function test() {
+	console.log("test");
+
+	// First, select the comment box with the contenteditable attribute
+	const commentBox = document.querySelector('div[contenteditable="true"][name="body"]');
+
+	if (commentBox) {
+		// Focus on the comment box to make it active
+		commentBox.focus();
+		const eventOptions = {bubbles: true, cancelable: true, view: window};
+
+		// Simulate mouse click to activate the box
+		commentBox.dispatchEvent(new MouseEvent("mousedown", eventOptions));
+		commentBox.dispatchEvent(new MouseEvent("mouseup", eventOptions));
+
+		// Use execCommand to insert text
+		document.execCommand("insertText", false, "test");
+
+		console.log("Text inserted successfully");
+	}
+}
+
+showTab(1);

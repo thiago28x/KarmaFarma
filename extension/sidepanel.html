@@ -117,19 +117,19 @@
 <!-- dropdown selector for app language -->
 <label for="lang-select">Content Language</label>
 <select name="lang" id="dd-language">
-  <option value="en">English</option>
-  <option value="de">Deutsch</option>
-  <option value="es">Español</option>
-  <option value="fr">Français</option>
-  <option value="it">Italiano</option>
-  <option value="nl">Nederlands</option>
-  <option value="pl">Polski</option>
-  <option value="pt">Português</option>
-  <option value="ru">Русский</option>
-  <option value="sv">Svenska</option>
-  <option value="tr">Türkçe</option>
-  <option value="uk">Українська</option>
-  <option value="zh">中文</option>
+  <option value="English">English</option>
+  <option value="Deutsch">Deutsch</option>
+  <option value="Español de Argentina">Español de Argentina</option>
+  <option value="Français">Français</option>
+  <option value="Italiano">Italiano</option>
+  <option value="Nederlands">Nederlands</option>
+  <option value="Polski">Polski</option>
+  <option value="Português do Brasil">Português do Brasil</option>
+  <option value="Русский">Русский</option>
+  <option value="Svenska">Svenska</option>
+  <option value="Türkçe">Türkçe</option>
+  <option value="Українська">Українська</option>
+  <option value="中文">中文</option>
 </select>
 </div>
 
@@ -141,19 +141,29 @@
 <!-- multiline text input -->
 <textarea id="customInstructions" placeholder="This subreddit is about [...] , assume expertise, try to be as creative/smarty-pants/quirky/mean/sexy as possible, etc" type="text" name="customInstructions" rows="4" cols="50"></textarea>
 <br>
-</form>
 
 
 </div>
 
 <div class="col">
-    asdasd
-    </div>
+<!-- llmModel selector -->
+<label for="lang-select">LLM Model</label>
+<select id="dd-model">
+    <option value="meta-llama/llama-3.2-11b-vision-instruct:free">meta-llama/llama-3.2-11b-vision-instruct</option>
+    <option value="liquid/lfm-40b:free">liquid/lfm-40b</option>
+    <option value="meta-llama/llama-3.1-405b-instruct:free">llama-3.1-405b</option>
+    <option value="nousresearch/hermes-3-llama-3.1-405b:free">Hermes 3 405B </option>
+    <option value="mistralai/mistral-7b-instruct:free">Mistral 7B</option>
+    <option value="microsoft/phi-3-medium-128k-instruct:free">Phi-3 Medium 128K</option>
+    <option value=""></option>
+    <option value="">Random Model</option>
+</select>
+</div>
     <div class="col">
-        asdasd
+        
         </div>
         <div class="col">
-            asdasd
+            
             </div>
 </div>
 <button id="btn-save-settings" style=" font-size: 18px;background-color: var(--mint); width: 230px; flex-direction: row; margin: 15px; justify-content: center;">
@@ -165,11 +175,18 @@
 
 <div class="tab" id="4" >
     
-    <h1>Suggestions</h1>
+    <div class="row">
+        <i class="fa-solid fa-chevron-left"></i>
+        <h1>Suggestions</h1>
+    </div>
     <div id="repliesContainer">
     <!-- reply list here -->
     </div>
-    
+    <!-- button load more -->
+    <button id="btn-load-more" style=" font-size: 18px;background-color: var(--mint); width: 230px; flex-direction: row; margin: 15px; justify-content: center;">
+        <i style="margin-right: 10px;" class="fa-solid fa-arrow-down"></i>
+        Load More
+    </button>
     </div>
 
 <div style="height: auto; min-height: 40px; background-color: rgba(51, 51, 51, 0.91);   justify-content: space-around;
