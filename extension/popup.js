@@ -101,19 +101,42 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Active Tab URL:", response.url);
     });
 });
+
+
+
+
 // Utility function to display replies
 function displayReplies(response) {
     const repliesContainer = document.getElementById("repliesContainer");
-    repliesContainer.innerHTML = "";
-    (Array.isArray(response) ? response : [response]).forEach(reply => {
+    repliesContainer.innerHTML = ""; // Clear any previous replies
+
+    let repliesArray;
+
+    // If the response is a stringified array, parse it first
+    if (typeof response === "string") {
+        try {
+            repliesArray = JSON.parse(response);
+        } catch (error) {
+            console.error("Error parsing response:", error);
+            return;
+        }
+    } else {
+        repliesArray = Array.isArray(response) ? response : [response];
+    }
+
+    // Iterate through the array and create elements for each reply
+    repliesArray.forEach(reply => {
         const replyElement = document.createElement("div");
         replyElement.classList.add("reply");
+
         const replyParagraph = document.createElement("p");
         replyParagraph.textContent = reply;
+
         replyElement.appendChild(replyParagraph);
         repliesContainer.appendChild(replyElement);
     });
 }
+
 
 
 
@@ -138,10 +161,7 @@ document.getElementById("test").addEventListener("click", () => {
 	insertCommentInRedditTab(commentText);
 });
 
-document.getElementById("info").addEventListener("click", () => {
 
-
-});
 
 document.addEventListener("DOMContentLoaded", function () {
 	const buttons = document.querySelectorAll(".icon-button");
@@ -171,6 +191,23 @@ function showTab(tabNumber) {
 
 
 
+function loadHistory() {
+	chrome.storage.local.get({ history: [] }, (data) => {
+		const historyList = document.getElementById("historyList"); // Assume this element exists in your HTML
+
+		data.history.forEach((request, index) => {
+			const listItem = document.createElement("li");
+			listItem.textContent = `Request ${index + 1}: ${request.model}, ${request.subreddit}, ${new Date()}`;
+			
+			const retryBtn = document.createElement("button");
+			retryBtn.textContent = "Retry";
+			retryBtn.addEventListener("click", () => retryRequest(request));
+			
+			listItem.appendChild(retryBtn);
+			historyList.appendChild(listItem);
+		});
+	});
+}
 
 
 function test() {
