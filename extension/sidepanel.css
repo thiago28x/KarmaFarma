@@ -19,11 +19,11 @@ body {
 	justify-content: space-between;
 	font-family: Montserrat, sans-serif;
 	font-size: 16px;
-	background-color: rgb(51, 51, 51, 1.0);
+	background-color: rgb(51, 51, 51, 1);
 	background-image: url("images/bg.svg");
 	background-position: center;
 	background-size: cover;
-    background-size: 280%;
+	background-size: 280%;
 	border-radius: 5px;
 	padding: 0px;
 	height: 100%; /* Full height based on html */
@@ -102,19 +102,22 @@ button {
 	margin-top: 3px;
 }
 
- i {
+i {
 	font-size: 18px;
 	color: white;
 	margin-bottom: 5px;
 	margin-top: 3px;
 }
 
-
+/* disabled button */
+button:disabled,
+button[disabled] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
 
 #footer > div > .icon-button {
-
 	background-color: #0057b3ca;
-
 }
 
 .icon-button {
@@ -155,10 +158,10 @@ select {
 .tab {
 	display: none;
 	padding: 0px;
-    background-color: rgba(43, 43, 43, 0.762);
-    padding-bottom: 30px;
-    border-radius: 5px;
-    margin: 13px;
+	background-color: rgba(43, 43, 43, 0.762);
+	padding-bottom: 30px;
+	border-radius: 5px;
+	margin: 13px;
 	max-width: 450px;
 }
 
@@ -193,27 +196,32 @@ textarea {
 	resize: yes;
 }
 
-
 input {
-    padding: 12px 10px;
-    margin: 8px 0;
-    margin-top: 0px;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    background-color: #f8f8f8;
-    font-size: 16px;
-    resize: none;
+	padding: 12px 10px;
+	margin: 8px 0;
+	margin-top: 0px;
+	box-sizing: border-box;
+	border: 2px solid #ccc;
+	border-radius: 5px;
+	background-color: #f8f8f8;
+	font-size: 16px;
+	resize: none;
+}
+
+#footer {
+	background-color: rgba(38, 53, 98, 0);
+	background-image: url("images/bg.svg");
+	background-size: 200px;
 }
 
 
-
-#footer {
-
-	background-color: rgba(38, 53, 98, 0);
-	background-image: url("images/bg.svg");
-	Background-size: 200px;
-
-
-
+.copy-icon {
+	font-size: 18px;
+	color: #fff;
+	margin-right: 10px;
+	margin-left: 10px;
+	background-color: var(--mint);
+	cursor: pointer;
+	padding: 20px;
+	border-radius: 100%;
 }

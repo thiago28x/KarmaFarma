@@ -6,9 +6,12 @@
     <title>KarmaFarma</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="sidepanel.css">
+    
 	
 </head>
 <body>
+    <div id="status-message" style="display: none; position: fixed; top: 10px; right: 10px; z-index: 1000; padding: 10px; border-radius: 5px; color: white; display: flex; flex-direction: column;">
+    </div>
 <div class="tab" id="1">
     <div class="ctr">
 
@@ -116,13 +119,13 @@
 <!-- dropdown selector for app language -->
 <label for="lang-select">Content Language</label>
 <select name="lang" id="dd-language">
-  <option value="English">English</option>
+  <option value="English" selected>English</option>
   <option value="Deutsch">Deutsch</option>
   <option value="Español de Argentina">Español de Argentina</option>
   <option value="Français">Français</option>
   <option value="Italiano">Italiano</option>
   <option value="Nederlands">Nederlands</option>
-  <option value="Polski">Polski</option>
+  <option value="Polski" >Polski</option>
   <option value="Português do Brasil">Português do Brasil</option>
   <option value="Русский">Русский</option>
   <option value="Svenska">Svenska</option>
